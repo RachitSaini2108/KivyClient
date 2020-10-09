@@ -8,8 +8,11 @@ class TestApp(App):
 
     import socket
     Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    Server.connect("192.168.1.4", 2108)
-    Server.send("Hello".encode('utf-8'))
-
+    try:
+        Server.connect(("192.168.1.4", 2108))
+        Server.send("Hello Bitch".encode('utf-8'))
+    except Exception as e:
+        print(e)
 
 TestApp().run()
+
