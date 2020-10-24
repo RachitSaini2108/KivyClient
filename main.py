@@ -1,23 +1,33 @@
+import kivy
 from kivy.app import App
+from kivy.uix.gridlayout import GridLayout
+from plyer import tts
+from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 
 
-class TestApp(App):
+class MyGrid(GridLayout):
+
+    def SPEAK(self, instance):
+        Text = self.TextToSpeak.text
+        tts.speak(Text)
+
+    def __init__(self, **kwargs):
+        super(MyGrid, self).__init__(**kwargs)
+        self.cols = 2
+
+        self.TextToSpeak = TextInput(text="Enter Text To Speak", multiline=False)
+        self.add_widget(self.TextToSpeak)
+
+        self.Speak = Button(text="SPEAK")
+        self.add_widget(self.Speak)
+        self.Speak.bind(on_press=self.SPEAK)
+
+
+class MyApp(App):
+
     def build(self):
-        return Button(text='Hello World')
+        return MyGrid()
 
-    import socket
-    import pyttsx3
-    engine = pyttsx3.init()
-    Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        Server.connect(("192.168.1.4", 2108))
-        Server.send("Hello Bitch".encode('utf-8'))
-    except Exception as e:
-        print(e)
-    while True:
-        messageToSpeak = Server.recv(1024).decode('utf-8')
-        engine.say(messageToSpeak)
-        engine.runAndWait()
 
-TestApp().run()
+MyApp().run()
