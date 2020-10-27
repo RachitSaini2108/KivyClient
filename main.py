@@ -1,33 +1,38 @@
 import kivy
 from kivy.app import App
+from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
-from plyer import tts
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
+from kivy.clock import Clock
+
+
+class SocketClient:
+    from plyer import tts
+    import socket
+    Server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    Server.connect(("192.168.1.4", 2108))
+
+    def ReceiveTextToSpeak(self):
+        TextToSpeak = SocketClient.Server.recv(1024).decode('utf-8')
+        SocketClient.tts.speak(TextToSpeak)
 
 
 class MyGrid(GridLayout):
 
-    def SPEAK(self, instance):
-        Text = self.TextToSpeak.text
-        tts.speak(Text)
+    def ReceiveTextCallback(self, instance):
+        Clock.schedule_interval(SocketClient.ReceiveTextToSpeak, 1 / 30)
 
     def __init__(self, **kwargs):
         super(MyGrid, self).__init__(**kwargs)
-        self.cols = 2
-
-        self.TextToSpeak = TextInput(text="Enter Text To Speak", multiline=False)
-        self.add_widget(self.TextToSpeak)
-
-        self.Speak = Button(text="SPEAK")
-        self.add_widget(self.Speak)
-        self.Speak.bind(on_press=self.SPEAK)
+        self.message = Label(text="Hello World")
+        self.add_widget(self.message)
+        SocketClient()
+        Clock.schedule_once(self.ReceiveTextCallback, 2)
 
 
 class MyApp(App):
-
     def build(self):
         return MyGrid()
 
 
 MyApp().run()
+
