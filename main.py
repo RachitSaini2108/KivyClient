@@ -4,7 +4,7 @@ from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
 from kivy.clock import Clock
 
-
+#
 class SocketClient:
     from plyer import tts
     import socket
@@ -37,10 +37,14 @@ class SocketClient:
 
 
 class MyGrid(GridLayout):
-    def UpdateGUI(self):
-        self.message.text = SocketClient.ReceiveTextToSpeak(None)
+    a = 0
+    def UpdateGUI(self, instance):
+        if SocketClient.ReceiveTextToSpeak(None) is not None:
+            MyGrid.a = SocketClient.ReceiveTextToSpeak(None)
+            self.message.text = str(MyGrid.a)
 
     def ReceiveTextCallback(self, instance):
+        pass
         Clock.schedule_interval(SocketClient.ReceiveTextToSpeak, 1 / 30)
         # Clock.schedule_interval(VideoCapture.SendVideoStream, 1 / 30)
 
@@ -48,9 +52,12 @@ class MyGrid(GridLayout):
         super(MyGrid, self).__init__(**kwargs)
         self.message = Label(text="Hello World")
         self.add_widget(self.message)
+        self.cols = 2
+        self.rows = 1
         # VideoCapture()
         SocketClient()
         Clock.schedule_once(self.ReceiveTextCallback, 2)
+        Clock.schedule_interval(self.UpdateGUI, 1/1)
 
 
 class MyApp(App):
