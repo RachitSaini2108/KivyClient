@@ -14,6 +14,7 @@ class SocketClient:
     def ReceiveTextToSpeak(self):
         TextToSpeak = SocketClient.Server.recv(1024).decode('utf-8')
         if TextToSpeak is not None:
+            MyGrid().message.text = TextToSpeak
             SocketClient.tts.speak(TextToSpeak)
             return TextToSpeak
 
@@ -37,11 +38,6 @@ class SocketClient:
 
 
 class MyGrid(GridLayout):
-    a = 0
-    def UpdateGUI(self, instance):
-        if SocketClient.ReceiveTextToSpeak(None) is not None:
-            MyGrid.a = SocketClient.ReceiveTextToSpeak(None)
-            self.message.text = str(MyGrid.a)
 
     def ReceiveTextCallback(self, instance):
         pass
@@ -57,7 +53,6 @@ class MyGrid(GridLayout):
         # VideoCapture()
         SocketClient()
         Clock.schedule_once(self.ReceiveTextCallback, 2)
-        Clock.schedule_interval(self.UpdateGUI, 1/1)
 
 
 class MyApp(App):
@@ -66,5 +61,3 @@ class MyApp(App):
 
 
 MyApp().run()
-
-
