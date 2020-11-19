@@ -16,11 +16,13 @@ class SocketClient:
         if TextToSpeak is not None:
             SocketClient.tts.speak(TextToSpeak)
             return TextToSpeak
+        else:
+            return ""
 
 
 class MyGrid(GridLayout):
-    def UpdateUI(self):
-        self.message.text = SocketClient.ReceiveTextToSpeak(None)
+    def UpdateUI(self, instance):
+        self.message.text = SocketClient.ReceiveTextToSpeak(SocketClient)
 
     def ReceiveTextCallback(self, instance):
         Clock.schedule_interval(SocketClient.ReceiveTextToSpeak, 1 / 100)
