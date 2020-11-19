@@ -1,4 +1,3 @@
-import kivy
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
@@ -26,6 +25,8 @@ class MyGrid(GridLayout):
 
     def ReceiveTextCallback(self, instance):
         Clock.schedule_interval(SocketClient.ReceiveTextToSpeak, 1 / 100)
+
+    def UpdateUICallBack(self, instance):
         Clock.schedule_interval(self.UpdateUI, 1 / 100)
 
     def __init__(self, **kwargs):
@@ -37,6 +38,7 @@ class MyGrid(GridLayout):
         # VideoCapture()
         SocketClient()
         Clock.schedule_once(self.ReceiveTextCallback, 2)
+        Clock.schedule_once(self.UpdateUICallBack, 2)
 
 
 class MyApp(App):
